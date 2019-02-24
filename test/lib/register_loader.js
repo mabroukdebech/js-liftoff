@@ -19,6 +19,24 @@ function handlerNotEmit(moduleName, moduleOrError) {
 
 describe('registerLoader', function() {
   describe('register loader', function() {
+    it('Should emit a "beforeRequire" event before registering loader',
+        function(done) {
+
+      var loaderPath = path.join(testDir, 'require-cfg.js');
+      var configPath = path.join(testDir, 'app.cfg');
+      var extensions = { '.cfg': loaderPath };
+
+      var app = new App();
+      app.on('beforeRequire', function(moduleName, resolved) {
+        expect(moduleName).to.be.equal(loaderPath);
+        expect(resolved).to.equal(loaderPath);
+        done();
+      });
+      app.on('requireFail', handlerNotEmit);
+
+      registerLoader(app, extensions, configPath);
+    });
+
     it('Should emit a "require" event when registering loader succeeds',
         function(done) {
 

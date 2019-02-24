@@ -310,6 +310,16 @@ describe('Liftoff', function () {
 
   describe('requireLocal', function () {
 
+    it('emits `beforeRequire` with the name of the module and resolved module path', function(done) {
+      var requireTest = new Liftoff({name:'require'});
+      requireTest.on('beforeRequire', function (name, resolved) {
+        expect(name).to.equal('mocha');
+        expect(resolved).to.equal(resolve.sync(name, { basedir: __dirname }));
+        done();
+      });
+      requireTest.requireLocal('mocha', __dirname);
+    });
+
     it('should emit `require` with the name of the module and the required module', function (done) {
       var requireTest = new Liftoff({name:'require'});
       requireTest.on('require', function (name, module) {

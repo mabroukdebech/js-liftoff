@@ -28,7 +28,9 @@ util.inherits(Liftoff, EE);
 
 Liftoff.prototype.requireLocal = function (module, basedir) {
   try {
-    var result = require(resolve.sync(module, {basedir: basedir}));
+    var resolvedModule = resolve.sync(module, {basedir: basedir});
+    this.emit('beforeRequire', module, resolvedModule);
+    var result = require(resolvedModule);
     this.emit('require', module, result);
     return result;
   } catch (e) {
